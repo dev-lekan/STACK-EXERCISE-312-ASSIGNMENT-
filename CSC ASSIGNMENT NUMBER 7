@@ -1,0 +1,88 @@
+#include <iostream>
+#include <stack>
+#include <map>
+
+class ExpressionConverter {
+private:
+    std::string infix;
+    std::string postfix;
+    std::stack<char> operatorStack;
+
+    // Helper function to determine the precedence of operators
+    int precedence(char op) {
+        std::map<char, int> precedenceMap = {{'+', 1}, {'-', 1}, {'*', 2}, {'/', 2}};
+        return precedenceMap[op];
+    }
+
+    // Helper function to convert infix to postfix
+    void convertToPostfix() {
+        postfix = "";
+        for (char sym : infix) {
+            if (isalnum(sym)) {
+                postfix += sym; // Operand, append to postfix
+            } else if (sym == '(') {
+                operatorStack.push(sym); // Left parenthesis, push onto stack
+            } else if (sym == ')') {
+                // Right parenthesis, pop and append operators until left parenthesis
+                while (!operatorStack.empty() && operatorStack.top() != '(') {
+                    postfix += operatorStack.top();
+                    operatorStack.pop();
+                }
+                operatorStack.pop(); // Discard the left parenthesis
+            } else if (sym == '+' || sym == '-' || sym == '*' || sym == '/') {
+                // Operator, pop and append operators with higher precedence
+                while (!operatorStack.empty() && precedence(operatorStack.top()) >= precedence(sym)) {
+                    postfix += operatorStack.top();
+                    operatorStack.pop();
+                }
+                operatorStack.push(sym); // Push the current operator onto stack
+            }
+        }
+        // Pop and append any remaining operators
+        while (!operatorStack.empty()) {
+            postfix += operatorStack.top();
+            operatorStack.pop();
+        }
+    }
+
+public:
+    ExpressionConverter() : infix(""), postfix(""), operatorStack() {}
+
+    ExpressionConverter(const std::string& exp) : infix(exp), postfix(""), operatorStack() {
+        convertToPostfix();
+    }
+
+    ~ExpressionConverter() {}
+
+    void getInfix(const std::string& exp) {
+        infix = exp;
+        convertToPostfix();
+    }
+
+    void showInfix() const {
+        std::cout << "Infix Expression: " << infix << std::endl;
+    }
+
+    void showPostfix() const {
+        std::cout << "Postfix Expression: " << postfix << std::endl;
+    }
+};
+
+int main() {
+    std::string expressions[] = {
+        "A + B - C;",
+        "(A + B) * C;",
+        "(A + B) * (C - D);",
+        "A + ((B + C) * (E - F) - G) / (H - I);",
+        "A + B * (C + D) - E / F * G + H;"
+    };
+
+    for (const std::string& exp : expressions) {
+        ExpressionConverter converter(exp);
+        converter.showInfix();
+        converter.showPostfix();
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
