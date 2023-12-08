@@ -1,0 +1,48 @@
+#include <iostream>
+#include <stack>
+
+bool isPrime(int num) {
+    if (num <= 1) {
+        return false;
+    }
+    for (int i = 2; i * i <= num; ++i) {
+        if (num % i == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+std::stack<int> primeFactors(int num) {
+    std::stack<int> factorsStack;
+    for (int i = num; i >= 2; --i) {
+        if (num % i == 0 && isPrime(i)) {
+            factorsStack.push(i);
+        }
+    }
+    return factorsStack;
+}
+
+int main() {
+    int num;
+
+    // Input the positive integer
+    std::cout << "Enter a positive integer: ";
+    std::cin >> num;
+
+    if (num <= 0) {
+        std::cout << "Please enter a positive integer.\n";
+        return 1;
+    }
+
+    // Get the prime factors and print them in descending order
+    std::stack<int> factors = primeFactors(num);
+
+    std::cout << "Prime factors of " << num << " in descending order: ";
+    while (!factors.empty()) {
+        std::cout << factors.top() << " ";
+        factors.pop();
+    }
+
+    return 0;
+}
