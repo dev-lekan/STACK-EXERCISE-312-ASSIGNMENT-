@@ -1,0 +1,45 @@
+#include <iostream>
+#include <stack>
+#include <cmath>
+
+int binaryToDecimal(const std::string& binary) {
+    std::stack<int> binaryStack;
+    
+    // Push each bit onto the stack
+    for (char bit : binary) {
+        if (bit == '0' || bit == '1') {
+            binaryStack.push(bit - '0'); // Convert char to int
+        } else {
+            std::cerr << "Invalid binary input.\n";
+            return -1; // Error code for invalid input
+        }
+    }
+
+    int decimalNumber = 0;
+    int weight = 0;
+
+    // Pop bits from the stack and calculate the decimal number
+    while (!binaryStack.empty()) {
+        decimalNumber += binaryStack.top() * pow(2, weight);
+        binaryStack.pop();
+        weight++;
+    }
+
+    return decimalNumber;
+}
+
+int main() {
+    std::string binaryNumbers[] = {"11000101", "10101010", "11111111", "10000000", "1111100000"};
+
+    for (const std::string& binary : binaryNumbers) {
+        int decimal = binaryToDecimal(binary);
+
+        if (decimal != -1) {
+            std::cout << "Binary: " << binary << " -> Decimal: " << decimal << std::endl;
+        } else {
+            std::cerr << "Conversion failed for binary: " << binary << std::endl;
+        }
+    }
+
+    return 0;
+}
