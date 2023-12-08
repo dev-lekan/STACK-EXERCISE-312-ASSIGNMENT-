@@ -1,0 +1,32 @@
+#include <iostream>
+#include <stack>
+
+std::string decimalToBinary(int decimal) {
+    std::stack<int> binaryStack;
+
+    // Convert decimal to binary using a stack
+    while (decimal > 0) {
+        binaryStack.push(decimal % 2);
+        decimal /= 2;
+    }
+
+    // Pop bits from the stack to construct the binary representation
+    std::string binaryNumber = "";
+    while (!binaryStack.empty()) {
+        binaryNumber += std::to_string(binaryStack.top());
+        binaryStack.pop();
+    }
+
+    return binaryNumber.empty() ? "0" : binaryNumber;
+}
+
+int main() {
+    int decimalNumbers[] = {13, 42, 255, 128, 496};
+
+    for (int decimal : decimalNumbers) {
+        std::string binary = decimalToBinary(decimal);
+        std::cout << "Decimal: " << decimal << " -> Binary: " << binary << std::endl;
+    }
+
+    return 0;
+}
